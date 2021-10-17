@@ -1,14 +1,19 @@
-# Проект Mesto фронтенд + бэкенд
+# Project Mesto (The Place) front end and back-end
 
-## Директории
+[По-русски](./README-RU.md)
 
-`/routes` — папка с файлами роутера  
-`/controllers` — папка с файлами контроллеров пользователя и карточки   
-`/models` — папка с файлами описания схем пользователя и карточки  
-  
-Остальные директории вспомогательные, создаются при необходимости разработчиком
+## Description
 
-## Запуск проекта
+React/Node/Express/MongoDB photo sharing web app\
+Sprints: 13 - 15
 
-`npm run start` — запускает сервер   
-`npm run dev` — запускает сервер с hot-reload
+## Run the project
+
+`npm run start` — starts the server   
+`npm run dev` — starts the server with hot-reload
+
+## Technologies used
+
+Server:
+- Node, Express: middlewares, routers 
+- MongoDB, Mongoose: schemas, models, CRUD operations, refs
