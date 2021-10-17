@@ -3,6 +3,12 @@ module.exports.errMsgs = {
   ERR_MSG_USR_NOT_FOUND: 'Requested user not found',
   ERR_MSG_USR_NOT_CREATED: 'Requested user not created',
   ERR_MSG_DEFAULT: 'A server error happened',
+  ERR_MSG_CARD_NOT_CREATED: 'Requested card not created',
+  ERR_MSG_CARD_NOT_FOUND: 'Requested card not found',
+};
+
+module.exports.resMsgs = {
+  RES_MSG_CARD_DELETED: 'Post successfully deleted',
 };
 
 module.exports.errNames = {

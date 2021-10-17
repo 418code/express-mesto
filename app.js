@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const userRouter = require('./routes/users');
+const cardRouter = require('./routes/cards');
 
 const { PORT } = process.env;
 
@@ -17,12 +18,13 @@ app.use(express.urlencoded({ extended: true }));
 // temp authorization
 app.use((req, res, next) => {
   req.user = {
-    _id: '6167972cd2b8bcda36846f3a',
+    _id: '616a5d4bd444ac5c8caae508',
   };
 
   next();
 });
 
 app.use('/users', userRouter);
+app.use('/cards', cardRouter);
 
 app.listen(PORT);
