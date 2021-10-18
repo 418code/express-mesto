@@ -48,9 +48,18 @@ module.exports.deleteCard = (req, res) => {
   }
 
   Card.findByIdAndRemove(cardId)
+    .orFail(() => {
+      const error = new Error(errMsgs.ERR_MSG_CARD_NOT_FOUND);
+      error.code = errCodes.ERR_CODE_NOT_FOUND;
+      error.name = errNames.NOT_FOUND;
+      throw error;
+    })
     .then(() => res.send({ message: resMsgs.RES_MSG_CARD_DELETED }))
     .catch((err) => {
       if (err.name === errNames.CAST) {
+        return sendErrRes(res, errCodes.ERR_CODE_BAD_DATA, errMsgs.ERR_MSG_BAD_DATA);
+      }
+      if (err.name === errNames.NOT_FOUND) {
         return sendErrRes(res, errCodes.ERR_CODE_NOT_FOUND, errMsgs.ERR_MSG_CARD_NOT_FOUND);
       }
       return sendErrRes(res, errCodes.ERR_CODE_DEFAULT, err.message);
@@ -68,10 +77,19 @@ module.exports.likeCard = (req, res) => {
   }
 
   Card.findByIdAndUpdate(cardId, { $addToSet: { likes: _id } }, { new: true })
+    .orFail(() => {
+      const error = new Error(errMsgs.ERR_MSG_CARD_NOT_FOUND);
+      error.code = errCodes.ERR_CODE_NOT_FOUND;
+      error.name = errNames.NOT_FOUND;
+      throw error;
+    })
     .populate(['owner', 'likes'])
     .then((card) => res.send(card))
     .catch((err) => {
       if (err.name === errNames.CAST) {
+        return sendErrRes(res, errCodes.ERR_CODE_BAD_DATA, errMsgs.ERR_MSG_BAD_DATA);
+      }
+      if (err.name === errNames.NOT_FOUND) {
         return sendErrRes(res, errCodes.ERR_CODE_NOT_FOUND, errMsgs.ERR_MSG_CARD_NOT_FOUND);
       }
       return sendErrRes(res, errCodes.ERR_CODE_DEFAULT, err.message);
@@ -89,10 +107,19 @@ module.exports.unlikeCard = (req, res) => {
   }
 
   Card.findByIdAndUpdate(cardId, { $pull: { likes: _id } }, { new: true })
+    .orFail(() => {
+      const error = new Error(errMsgs.ERR_MSG_CARD_NOT_FOUND);
+      error.code = errCodes.ERR_CODE_NOT_FOUND;
+      error.name = errNames.NOT_FOUND;
+      throw error;
+    })
     .populate(['owner', 'likes'])
     .then((card) => res.send(card))
     .catch((err) => {
       if (err.name === errNames.CAST) {
+        return sendErrRes(res, errCodes.ERR_CODE_BAD_DATA, errMsgs.ERR_MSG_BAD_DATA);
+      }
+      if (err.name === errNames.NOT_FOUND) {
         return sendErrRes(res, errCodes.ERR_CODE_NOT_FOUND, errMsgs.ERR_MSG_CARD_NOT_FOUND);
       }
       return sendErrRes(res, errCodes.ERR_CODE_DEFAULT, err.message);

@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const userRouter = require('./routes/users');
 const cardRouter = require('./routes/cards');
+const { sendErrRes, errCodes, errMsgs } = require('./utils/utils');
 
 const { PORT } = process.env;
 
@@ -26,5 +27,8 @@ app.use((req, res, next) => {
 
 app.use('/users', userRouter);
 app.use('/cards', cardRouter);
+app.use('*', (req, res) => {
+  sendErrRes(res, errCodes.ERR_CODE_NOT_FOUND, errMsgs.ERR_MSG_PAGE_NOT_FOUND);
+});
 
 app.listen(PORT);

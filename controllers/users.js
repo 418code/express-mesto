@@ -23,9 +23,18 @@ module.exports.getUser = (req, res) => {
   }
 
   User.findById(userId)
+    .orFail(() => {
+      const error = new Error(errMsgs.ERR_MSG_USR_NOT_FOUND);
+      error.code = errCodes.ERR_CODE_NOT_FOUND;
+      error.name = errNames.NOT_FOUND;
+      throw error;
+    })
     .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === errNames.CAST) {
+        return sendErrRes(res, errCodes.ERR_CODE_BAD_DATA, errMsgs.ERR_MSG_BAD_DATA);
+      }
+      if (err.name === errNames.NOT_FOUND) {
         return sendErrRes(res, errCodes.ERR_CODE_NOT_FOUND, errMsgs.ERR_MSG_USR_NOT_FOUND);
       }
       return sendErrRes(res, errCodes.ERR_CODE_DEFAULT, err.message);
@@ -63,13 +72,25 @@ module.exports.updateUser = (req, res) => {
     return;
   }
 
-  User.findByIdAndUpdate(_id, { name, about }, { new: true })
+  User.findByIdAndUpdate(_id, { name, about }, { new: true, runValidators: true })
+    .orFail(() => {
+      const error = new Error(errMsgs.ERR_MSG_USR_NOT_FOUND);
+      error.code = errCodes.ERR_CODE_NOT_FOUND;
+      error.name = errNames.NOT_FOUND;
+      throw error;
+    })
     .then((user) => {
       res.send(user);
     })
     .catch((err) => {
       if (err.name === errNames.CAST) {
+        return sendErrRes(res, errCodes.ERR_CODE_BAD_DATA, errMsgs.ERR_MSG_BAD_DATA);
+      }
+      if (err.name === errNames.NOT_FOUND) {
         return sendErrRes(res, errCodes.ERR_CODE_NOT_FOUND, errMsgs.ERR_MSG_USR_NOT_FOUND);
+      }
+      if (err.name === errNames.VALIDATION) {
+        return sendErrRes(res, errCodes.ERR_CODE_BAD_DATA, errMsgs.ERR_MSG_USR_NOT_UPDATED);
       }
       return sendErrRes(res, errCodes.ERR_CODE_DEFAULT, err.message);
     });
@@ -85,13 +106,25 @@ module.exports.updateAvatar = (req, res) => {
     return;
   }
 
-  User.findByIdAndUpdate(_id, { avatar }, { new: true })
+  User.findByIdAndUpdate(_id, { avatar }, { new: true, runValidators: true })
+    .orFail(() => {
+      const error = new Error(errMsgs.ERR_MSG_USR_NOT_FOUND);
+      error.code = errCodes.ERR_CODE_NOT_FOUND;
+      error.name = errNames.NOT_FOUND;
+      throw error;
+    })
     .then((user) => {
       res.send(user);
     })
     .catch((err) => {
       if (err.name === errNames.CAST) {
+        return sendErrRes(res, errCodes.ERR_CODE_BAD_DATA, errMsgs.ERR_MSG_BAD_DATA);
+      }
+      if (err.name === errNames.NOT_FOUND) {
         return sendErrRes(res, errCodes.ERR_CODE_NOT_FOUND, errMsgs.ERR_MSG_USR_NOT_FOUND);
+      }
+      if (err.name === errNames.VALIDATION) {
+        return sendErrRes(res, errCodes.ERR_CODE_BAD_DATA, errMsgs.ERR_MSG_USR_NOT_UPDATED);
       }
       return sendErrRes(res, errCodes.ERR_CODE_DEFAULT, err.message);
     });
