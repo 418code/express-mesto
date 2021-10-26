@@ -26,9 +26,12 @@ module.exports.createCard = (req, res) => {
   }
 
   Card.create({ name, link, owner: _id })
-    .populate(['owner', 'likes'])
     .then((card) => {
-      res.send(card);
+      Card.findById(card._id)
+        .populate(['owner', 'likes'])
+        .then((populatedCard) => {
+          res.send(populatedCard);
+        });
     })
     .catch((err) => {
       if (err.name === errNames.VALIDATION) {
