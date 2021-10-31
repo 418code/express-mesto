@@ -1,131 +1,102 @@
 const User = require('../models/user');
 const {
-  errCodes,
-  errNames,
   errMsgs,
-  sendErrRes,
+  errNames,
 } = require('../utils/utils');
+const NotFoundError = require('../errors/NotFoundError');
+const BadDataError = require('../errors/BadDataError');
 
 // GET /users/
-module.exports.getUsers = (req, res) => {
+module.exports.getUsers = (req, res, next) => {
   User.find({})
+    .orFail(() => new NotFoundError(errMsgs.ERR_MSG_NOT_FOUND('users')))
     .then((users) => res.send(users))
-    .catch((err) => sendErrRes(res, errCodes.ERR_CODE_DEFAULT, err.message));
+    .catch(next);
 };
 
 // GET /users/:userId
-module.exports.getUser = (req, res) => {
+module.exports.getUser = (req, res, next) => {
   const { userId } = req.params;
 
   if (!userId) {
-    sendErrRes(res, errCodes.ERR_CODE_BAD_DATA, errMsgs.ERR_MSG_BAD_DATA);
-    return;
+    throw new BadDataError(errMsgs.ERR_MSG_BAD_DATA('user'));
   }
 
   User.findById(userId)
-    .orFail(() => {
-      const error = new Error(errMsgs.ERR_MSG_USR_NOT_FOUND);
-      error.code = errCodes.ERR_CODE_NOT_FOUND;
-      error.name = errNames.NOT_FOUND;
-      throw error;
+    .orFail((err) => {
+      if (err.name === errNames.CAST) {
+        return new BadDataError(errMsgs.ERR_MSG_BAD_DATA('user'));
+      }
+      return new NotFoundError(errMsgs.ERR_MSG_NOT_FOUND('user'));
     })
     .then((user) => res.send(user))
-    .catch((err) => {
-      if (err.name === errNames.CAST) {
-        return sendErrRes(res, errCodes.ERR_CODE_BAD_DATA, errMsgs.ERR_MSG_BAD_DATA);
-      }
-      if (err.name === errNames.NOT_FOUND) {
-        return sendErrRes(res, errCodes.ERR_CODE_NOT_FOUND, errMsgs.ERR_MSG_USR_NOT_FOUND);
-      }
-      return sendErrRes(res, errCodes.ERR_CODE_DEFAULT, err.message);
-    });
+    .catch(next);
 };
 
 // POST /users/
-module.exports.createUser = (req, res) => {
+module.exports.createUser = (req, res, next) => {
   const { name, about, avatar } = req.body;
 
   if (!name || !about || !avatar) {
-    sendErrRes(res, errCodes.ERR_CODE_BAD_DATA, errMsgs.ERR_MSG_BAD_DATA);
-    return;
+    throw new BadDataError(errMsgs.ERR_MSG_BAD_DATA('user'));
   }
 
   User.create({ name, about, avatar })
     .then((user) => {
+      if (!user) {
+        Promise.reject(new BadDataError(errMsgs.ERR_MSG_NOT_CREATED('user')));
+      }
       res.send(user);
     })
-    .catch((err) => {
-      if (err.name === errNames.VALIDATION) {
-        return sendErrRes(res, errCodes.ERR_CODE_BAD_DATA, errMsgs.ERR_MSG_USR_NOT_CREATED);
-      }
-      return sendErrRes(res, errCodes.ERR_CODE_DEFAULT, err.message);
-    });
+    .catch(next);
 };
 
 // PATCH /users/me — updates profile
-module.exports.updateUser = (req, res) => {
+module.exports.updateUser = (req, res, next) => {
   const { name, about } = req.body;
   const { _id } = req.user;
 
   if (!name || !about || !_id) {
-    sendErrRes(res, errCodes.ERR_CODE_BAD_DATA, errMsgs.ERR_MSG_BAD_DATA);
-    return;
+    throw new BadDataError(errMsgs.ERR_MSG_BAD_DATA('user'));
   }
 
   User.findByIdAndUpdate(_id, { name, about }, { new: true, runValidators: true })
-    .orFail(() => {
-      const error = new Error(errMsgs.ERR_MSG_USR_NOT_FOUND);
-      error.code = errCodes.ERR_CODE_NOT_FOUND;
-      error.name = errNames.NOT_FOUND;
-      throw error;
+    .orFail((err) => {
+      if (err.name === errNames.CAST) {
+        return new BadDataError(errMsgs.ERR_MSG_BAD_DATA('user'));
+      }
+      if (err.name === errNames.VALIDATION) {
+        return new BadDataError(errMsgs.ERR_MSG_NOT_UPDATED('user'));
+      }
+      return new NotFoundError(errMsgs.ERR_MSG_NOT_FOUND('user'));
     })
     .then((user) => {
       res.send(user);
     })
-    .catch((err) => {
-      if (err.name === errNames.CAST) {
-        return sendErrRes(res, errCodes.ERR_CODE_BAD_DATA, errMsgs.ERR_MSG_BAD_DATA);
-      }
-      if (err.name === errNames.NOT_FOUND) {
-        return sendErrRes(res, errCodes.ERR_CODE_NOT_FOUND, errMsgs.ERR_MSG_USR_NOT_FOUND);
-      }
-      if (err.name === errNames.VALIDATION) {
-        return sendErrRes(res, errCodes.ERR_CODE_BAD_DATA, errMsgs.ERR_MSG_USR_NOT_UPDATED);
-      }
-      return sendErrRes(res, errCodes.ERR_CODE_DEFAULT, err.message);
-    });
+    .catch(next);
 };
 
 // PATCH /users/me/avatar — updated avatar
-module.exports.updateAvatar = (req, res) => {
+module.exports.updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
   const { _id } = req.user;
 
   if (!avatar || !_id) {
-    sendErrRes(res, errCodes.ERR_CODE_BAD_DATA, errMsgs.ERR_MSG_BAD_DATA);
-    return;
+    throw new BadDataError(errMsgs.ERR_MSG_BAD_DATA('user'));
   }
 
   User.findByIdAndUpdate(_id, { avatar }, { new: true, runValidators: true })
-    .orFail(() => {
-      const error = new Error(errMsgs.ERR_MSG_USR_NOT_FOUND);
-      error.code = errCodes.ERR_CODE_NOT_FOUND;
-      error.name = errNames.NOT_FOUND;
-      throw error;
+    .orFail((err) => {
+      if (err.name === errNames.CAST) {
+        return new BadDataError(errMsgs.ERR_MSG_BAD_DATA('user'));
+      }
+      if (err.name === errNames.VALIDATION) {
+        return new BadDataError(errMsgs.ERR_MSG_NOT_UPDATED('user'));
+      }
+      return new NotFoundError(errMsgs.ERR_MSG_NOT_FOUND('user'));
     })
     .then((user) => {
       res.send(user);
     })
-    .catch((err) => {
-      if (err.name === errNames.CAST) {
-        return sendErrRes(res, errCodes.ERR_CODE_BAD_DATA, errMsgs.ERR_MSG_BAD_DATA);
-      }
-      if (err.name === errNames.NOT_FOUND) {
-        return sendErrRes(res, errCodes.ERR_CODE_NOT_FOUND, errMsgs.ERR_MSG_USR_NOT_FOUND);
-      }
-      if (err.name === errNames.VALIDATION) {
-        return sendErrRes(res, errCodes.ERR_CODE_BAD_DATA, errMsgs.ERR_MSG_USR_NOT_UPDATED);
-      }
-      return sendErrRes(res, errCodes.ERR_CODE_DEFAULT, err.message);
-    });
+    .catch(next);
 };
