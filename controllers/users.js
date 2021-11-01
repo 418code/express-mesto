@@ -44,7 +44,7 @@ module.exports.createUser = (req, res, next) => {
   User.create({ name, about, avatar })
     .then((user) => {
       if (!user) {
-        Promise.reject(new BadDataError(errMsgs.ERR_MSG_NOT_CREATED('user')));
+        throw new BadDataError(errMsgs.ERR_MSG_NOT_CREATED('user'));
       }
       res.send(user);
     })

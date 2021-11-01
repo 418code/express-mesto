@@ -28,7 +28,7 @@ module.exports.createCard = (req, res, next) => {
   Card.create({ name, link, owner: _id })
     .then((card) => {
       if (!card) {
-        Promise.reject(new BadDataError(errMsgs.ERR_MSG_NOT_CREATED('card')));
+        throw new BadDataError(errMsgs.ERR_MSG_NOT_CREATED('card'));
       } else {
         Card.findById(card._id)
           .populate(['owner', 'likes'])
