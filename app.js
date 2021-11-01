@@ -20,7 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 // temp authorization
 app.use((req, res, next) => {
   req.user = {
-    _id: '616a5d4bd444ac5c8caae508',
+    _id: '617f6c3de9dff5d1ecc71752',
   };
 
   next();

@@ -1,3 +1,5 @@
+const bcrypt = require('bcryptjs');
+const validator = require('validator');
 const User = require('../models/user');
 const {
   errMsgs,
@@ -35,13 +37,30 @@ module.exports.getUser = (req, res, next) => {
 
 // POST /users/
 module.exports.createUser = (req, res, next) => {
-  const { name, about, avatar } = req.body;
+  const {
+    name,
+    about,
+    avatar,
+    email,
+    password,
+  } = req.body;
 
-  if (!name || !about || !avatar) {
+  if (!email || !password) {
     throw new BadDataError(errMsgs.ERR_MSG_BAD_DATA('user'));
   }
 
-  User.create({ name, about, avatar })
+  if (!validator.isEmail(email)) {
+    throw new BadDataError(errMsgs.ERR_MSG_BAD_DATA('email'));
+  }
+
+  bcrypt.hash(password, 10)
+    .then((hash) => User.create({
+      name,
+      about,
+      avatar,
+      email,
+      password: hash,
+    }))
     .then((user) => {
       if (!user) {
         throw new BadDataError(errMsgs.ERR_MSG_NOT_CREATED('user'));
