@@ -1,12 +1,15 @@
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const validator = require('validator');
 const User = require('../models/user');
 const {
   errMsgs,
   errNames,
+  jwtKey,
 } = require('../utils/utils');
 const NotFoundError = require('../errors/NotFoundError');
 const BadDataError = require('../errors/BadDataError');
+const NotAuthError = require('../errors/NotAuthError');
 
 // GET /users/
 module.exports.getUsers = (req, res, next) => {
@@ -35,7 +38,7 @@ module.exports.getUser = (req, res, next) => {
     .catch(next);
 };
 
-// POST /users/
+// POST /signup
 module.exports.createUser = (req, res, next) => {
   const {
     name,
@@ -116,6 +119,26 @@ module.exports.updateAvatar = (req, res, next) => {
     })
     .then((user) => {
       res.send(user);
+    })
+    .catch(next);
+};
+
+// POST /signin
+module.exports.login = (req, res, next) => {
+  const { email, password } = req.body;
+
+  if (!(email && password && validator.isEmail(email))) {
+    throw new NotAuthError(errMsgs.ERR_MSG_LOGIN);
+  }
+
+  User.findUserByCredentials(email, password)
+    .then((user) => {
+      const token = jwt.sign({ _id: user._id }, jwtKey, { expiresIn: '7d' });
+      res.cookie('jwt', token, {
+        maxAge: 7 * 24 * 60 * 1000,
+        httpOnly: true,
+      })
+        .end();
     })
     .catch(next);
 };

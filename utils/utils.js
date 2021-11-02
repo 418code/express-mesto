@@ -1,5 +1,6 @@
 module.exports.errMsgs = {
   ERR_MSG_DEFAULT: 'A server error happened',
+  ERR_MSG_LOGIN: 'Wrong email or password',
   ERR_MSG_BAD_DATA: (name) => `Bad ${name} data`,
   ERR_MSG_NOT_FOUND: (name) => `Requested ${name} not found`,
   ERR_MSG_NOT_CREATED: (name) => `Requested ${name} not created`,
@@ -18,6 +19,7 @@ module.exports.errNames = {
 
 module.exports.errCodes = {
   ERR_CODE_BAD_DATA: 400,
+  ERR_CODE_NOT_AUTH: 401,
   ERR_CODE_NOT_FOUND: 404,
   ERR_CODE_DEFAULT: 500,
 };
@@ -31,3 +33,5 @@ module.exports.errors = {
 module.exports.sendErrRes = (res, errCode, errMsg) => {
   res.status(errCode).send({ message: errMsg });
 };
+
+module.exports.jwtKey = '7Bfp29Lifm!fnpw6ZqP6290nat';

@@ -4,7 +4,7 @@ const userRouter = require('./routes/users');
 const cardRouter = require('./routes/cards');
 const { sendErrRes, errCodes, errMsgs } = require('./utils/utils');
 const { handleErrors } = require('./middlewares/error');
-const { createUser } = require('./controllers/users');
+const { createUser, login } = require('./controllers/users');
 
 const { PORT } = process.env;
 
@@ -27,6 +27,7 @@ app.use((req, res, next) => {
   next();
 });
 
+app.post('/signin', login);
 app.post('/signup', createUser);
 app.use('/users', userRouter);
 app.use('/cards', cardRouter);
