@@ -1,6 +1,7 @@
 module.exports.errMsgs = {
   ERR_MSG_DEFAULT: 'A server error happened',
   ERR_MSG_LOGIN: 'Wrong email or password',
+  ERR_MSG_AUTH_REQ: 'Authentication required',
   ERR_MSG_BAD_DATA: (name) => `Bad ${name} data`,
   ERR_MSG_NOT_FOUND: (name) => `Requested ${name} not found`,
   ERR_MSG_NOT_CREATED: (name) => `Requested ${name} not created`,

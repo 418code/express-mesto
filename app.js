@@ -5,6 +5,7 @@ const cardRouter = require('./routes/cards');
 const { sendErrRes, errCodes, errMsgs } = require('./utils/utils');
 const { handleErrors } = require('./middlewares/error');
 const { createUser, login } = require('./controllers/users');
+const { auth } = require('./middlewares/auth');
 
 const { PORT } = process.env;
 
@@ -18,17 +19,11 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// temp authorization
-app.use((req, res, next) => {
-  req.user = {
-    _id: '617f6c3de9dff5d1ecc71752',
-  };
-
-  next();
-});
-
 app.post('/signin', login);
 app.post('/signup', createUser);
+
+app.use(auth); // enable authentication for next routes
+
 app.use('/users', userRouter);
 app.use('/cards', cardRouter);
 app.use('*', (req, res) => {
