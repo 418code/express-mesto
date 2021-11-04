@@ -38,6 +38,12 @@ module.exports.getUser = (req, res, next) => {
     .catch(next);
 };
 
+// GET /users/me
+module.exports.getUserInfo = (req, res, next) => {
+  req.params.userId = req.user._id;
+  this.getUser(req, res, next);
+};
+
 // POST /signup
 module.exports.createUser = (req, res, next) => {
   const {
