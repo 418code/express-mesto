@@ -2,6 +2,7 @@ module.exports.errMsgs = {
   ERR_MSG_DEFAULT: 'A server error happened',
   ERR_MSG_LOGIN: 'Wrong email or password',
   ERR_MSG_AUTH_REQ: 'Authentication required',
+  ERR_MSG_FORBIDDEN: 'Not authorized',
   ERR_MSG_BAD_DATA: (name) => `Bad ${name} data`,
   ERR_MSG_NOT_FOUND: (name) => `Requested ${name} not found`,
   ERR_MSG_NOT_CREATED: (name) => `Requested ${name} not created`,
@@ -16,11 +17,13 @@ module.exports.errNames = {
   VALIDATION: 'ValidationError',
   CAST: 'CastError',
   NOT_FOUND: 'DocumentNotFoundError',
+  FORBIDDEN: 'ForbiddenError',
 };
 
 module.exports.errCodes = {
   ERR_CODE_BAD_DATA: 400,
   ERR_CODE_NOT_AUTH: 401,
+  ERR_CODE_FORBIDDEN: 403,
   ERR_CODE_NOT_FOUND: 404,
   ERR_CODE_DEFAULT: 500,
 };
@@ -29,6 +32,7 @@ module.exports.errors = {
   [this.errNames.VALIDATION]: this.errCodes.ERR_CODE_BAD_DATA,
   [this.errNames.CAST]: this.errCodes.ERR_CODE_BAD_DATA,
   [this.errNames.NOT_FOUND]: this.errCodes.ERR_CODE_NOT_FOUND,
+  [this.errNames.FORBIDDEN]: this.errCodes.ERR_CODE_FORBIDDEN,
 };
 
 module.exports.sendErrRes = (res, errCode, errMsg) => {

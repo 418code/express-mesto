@@ -1,6 +1,7 @@
 const Card = require('../models/card');
 const BadDataError = require('../errors/BadDataError');
 const NotFoundError = require('../errors/NotFoundError');
+const ForbiddenError = require('../errors/ForbiddenError');
 const {
   errMsgs,
   errNames,
@@ -43,17 +44,24 @@ module.exports.createCard = (req, res, next) => {
 // DELETE /cards/:cardId — deletes a card with cardId
 module.exports.deleteCard = (req, res, next) => {
   const { cardId } = req.params;
+  const { _id } = req.user;
 
   if (!cardId) {
     throw new BadDataError(errMsgs.ERR_MSG_BAD_DATA('card'));
   }
 
-  Card.findByIdAndRemove(cardId)
+  Card.findById(cardId)
     .orFail((err) => {
       if (err.name === errNames.CAST) {
         return new BadDataError(errMsgs.ERR_MSG_BAD_DATA('card'));
       }
       return new NotFoundError(errMsgs.ERR_MSG_NOT_FOUND('card'));
+    })
+    .then((card) => {
+      if (card.owner._id.toString() !== _id) {
+        throw new ForbiddenError();
+      }
+      Card.findByIdAndRemove(cardId);
     })
     .then(() => { res.send({ message: resMsgs.RES_MSG_CARD_DELETED }); })
     .catch(next);
