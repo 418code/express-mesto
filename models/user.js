@@ -29,13 +29,14 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
+    select: false,
     minlength: 8,
   },
 });
 
 userSchema.statics.findUserByCredentials = async function findUserByCredentials(email, password) {
   const loginError = new NotAuthError(errMsgs.ERR_MSG_LOGIN);
-  const user = await this.findOne({ email });
+  const user = await this.findOne({ email }).select('+password');
   if (!user) {
     throw loginError;
   }
