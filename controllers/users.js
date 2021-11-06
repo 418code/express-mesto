@@ -6,6 +6,7 @@ const {
   errMsgs,
   errNames,
   jwtKey,
+  cookieMaxAge,
 } = require('../utils/utils');
 const NotFoundError = require('../errors/NotFoundError');
 const BadDataError = require('../errors/BadDataError');
@@ -141,7 +142,7 @@ module.exports.login = (req, res, next) => {
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, jwtKey, { expiresIn: '7d' });
       res.cookie('jwt', token, {
-        maxAge: 7 * 24 * 60 * 1000,
+        maxAge: cookieMaxAge,
         httpOnly: true,
       })
         .end();
