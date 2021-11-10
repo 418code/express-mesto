@@ -6,6 +6,11 @@ const { sendErrRes, errCodes, errMsgs } = require('./utils/utils');
 const { handleErrors } = require('./middlewares/error');
 const { createUser, login } = require('./controllers/users');
 const { auth } = require('./middlewares/auth');
+const {
+  validateLogin,
+  validateCreateUser,
+  validateHeaderToken,
+} = require('./middlewares/valid');
 
 const { PORT } = process.env;
 
@@ -19,9 +24,10 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.post('/signin', login);
-app.post('/signup', createUser);
+app.post('/signin', validateLogin, login);
+app.post('/signup', validateCreateUser, createUser);
 
+app.use(validateHeaderToken); // check if auth token present
 app.use(auth); // enable authentication for next routes
 
 app.use('/users', userRouter);

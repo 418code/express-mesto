@@ -4,7 +4,6 @@ const NotFoundError = require('../errors/NotFoundError');
 const ForbiddenError = require('../errors/ForbiddenError');
 const {
   errMsgs,
-  errNames,
   resMsgs,
 } = require('../utils/utils');
 
@@ -22,16 +21,13 @@ module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
   const { _id } = req.user;
 
-  if (!_id || !name || !link) {
-    throw new BadDataError(errMsgs.ERR_MSG_BAD_DATA('card'));
-  }
-
   Card.create({ name, link, owner: _id })
     .then((card) => {
       if (!card) {
         throw new BadDataError(errMsgs.ERR_MSG_NOT_CREATED('card'));
       } else {
         Card.findById(card._id)
+          .orFail(() => new NotFoundError(errMsgs.ERR_MSG_NOT_FOUND('card')))
           .populate(['owner', 'likes'])
           .then((populatedCard) => {
             res.send(populatedCard);
@@ -46,17 +42,8 @@ module.exports.deleteCard = (req, res, next) => {
   const { cardId } = req.params;
   const { _id } = req.user;
 
-  if (!cardId) {
-    throw new BadDataError(errMsgs.ERR_MSG_BAD_DATA('card'));
-  }
-
   Card.findById(cardId)
-    .orFail((err) => {
-      if (err.name === errNames.CAST) {
-        return new BadDataError(errMsgs.ERR_MSG_BAD_DATA('card'));
-      }
-      return new NotFoundError(errMsgs.ERR_MSG_NOT_FOUND('card'));
-    })
+    .orFail(() => new NotFoundError(errMsgs.ERR_MSG_NOT_FOUND('card')))
     .then((card) => {
       if (card.owner._id.toString() !== _id) {
         throw new ForbiddenError();
@@ -72,17 +59,8 @@ module.exports.likeCard = (req, res, next) => {
   const { cardId } = req.params;
   const { _id } = req.user;
 
-  if (!cardId) {
-    throw new BadDataError(errMsgs.ERR_MSG_BAD_DATA('card'));
-  }
-
   Card.findByIdAndUpdate(cardId, { $addToSet: { likes: _id } }, { new: true })
-    .orFail((err) => {
-      if (err.name === errNames.CAST) {
-        return new BadDataError(errMsgs.ERR_MSG_BAD_DATA('card'));
-      }
-      return new NotFoundError(errMsgs.ERR_MSG_NOT_FOUND('card'));
-    })
+    .orFail(() => new NotFoundError(errMsgs.ERR_MSG_NOT_FOUND('cards')))
     .populate(['owner', 'likes'])
     .then((card) => { res.send(card); })
     .catch(next);
@@ -93,17 +71,8 @@ module.exports.unlikeCard = (req, res, next) => {
   const { cardId } = req.params;
   const { _id } = req.user;
 
-  if (!cardId) {
-    throw new BadDataError(errMsgs.ERR_MSG_BAD_DATA('card'));
-  }
-
   Card.findByIdAndUpdate(cardId, { $pull: { likes: _id } }, { new: true })
-    .orFail((err) => {
-      if (err.name === errNames.CAST) {
-        return new BadDataError(errMsgs.ERR_MSG_BAD_DATA('card'));
-      }
-      return new NotFoundError(errMsgs.ERR_MSG_NOT_FOUND('card'));
-    })
+    .orFail(() => new NotFoundError(errMsgs.ERR_MSG_NOT_FOUND('cards')))
     .populate(['owner', 'likes'])
     .then((card) => { res.send(card); })
     .catch(next);
