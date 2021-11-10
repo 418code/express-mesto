@@ -19,6 +19,7 @@ module.exports.errNames = {
   NOT_FOUND: 'DocumentNotFoundError',
   NOT_AUTH: 'AuthenticationError',
   FORBIDDEN: 'ForbiddenError',
+  MONGO: 'MongoServerError',
 };
 
 module.exports.errCodes = {
@@ -26,7 +27,9 @@ module.exports.errCodes = {
   ERR_CODE_NOT_AUTH: 401,
   ERR_CODE_FORBIDDEN: 403,
   ERR_CODE_NOT_FOUND: 404,
+  ERR_CODE_CONFLICT: 409,
   ERR_CODE_DEFAULT: 500,
+  ERR_CODE_MDB_DUPLICATE: 11000,
 };
 
 module.exports.errors = {
