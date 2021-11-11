@@ -48,9 +48,10 @@ module.exports.deleteCard = (req, res, next) => {
       if (card.owner._id.toString() !== _id) {
         throw new ForbiddenError();
       }
-      Card.findByIdAndRemove(cardId);
+      Card.findByIdAndRemove(cardId)
+        .orFail(() => new NotFoundError(errMsgs.ERR_MSG_NOT_FOUND('card')))
+        .then(() => { res.send({ message: resMsgs.RES_MSG_CARD_DELETED }); });
     })
-    .then(() => { res.send({ message: resMsgs.RES_MSG_CARD_DELETED }); })
     .catch(next);
 };
 
