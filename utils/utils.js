@@ -51,3 +51,8 @@ module.exports.cookieMaxAge = 7 * 24 * 60 * 1000;
 module.exports.urlRegEx = /https?:\/\/(www\.)?[a-zA-Z0-9._~:/?#[\]@!$&'()*+,;=]+/;
 
 module.exports.tokenRegEx = /^Bearer\s/;
+
+module.exports.limiterValues = {
+  windowMs: 10 * 60 * 1000, // 10 min
+  max: 100, // limit each IP to 100 requests per windowMs
+};

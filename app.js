@@ -1,8 +1,14 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const rateLimit = require('express-rate-limit');
 const userRouter = require('./routes/users');
 const cardRouter = require('./routes/cards');
-const { sendErrRes, errCodes, errMsgs } = require('./utils/utils');
+const {
+  sendErrRes,
+  errCodes,
+  errMsgs,
+  limiterValues,
+} = require('./utils/utils');
 const { handleErrors } = require('./middlewares/error');
 const { createUser, login } = require('./controllers/users');
 const { auth } = require('./middlewares/auth');
@@ -18,7 +24,14 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
 });
 
+const limiter = rateLimit({
+  windowMs: limiterValues.windowMs,
+  max: limiterValues.max, // limit each IP to max requests per windowMs
+});
+
 const app = express();
+
+app.use(limiter); // basic ddos prevention
 
 // body-parser is built-in with latest express
 app.use(express.json());
