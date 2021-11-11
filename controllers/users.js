@@ -55,7 +55,7 @@ module.exports.createUser = (req, res, next) => {
       if (!user) {
         throw new BadDataError(errMsgs.ERR_MSG_NOT_CREATED('user'));
       }
-      res.send(user);
+      res.send({ data: { email } });
     })
     .catch(next);
 };
