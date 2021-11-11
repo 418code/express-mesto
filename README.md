@@ -4,7 +4,7 @@
 
 ## Description
 
-React/Node/Express/MongoDB photo sharing web app\
+Node/Express/MongoDB back end for [React photo sharing front end](https://github.com/bliss-code/react-mesto-auth)\
 Sprints: 13 - 15
 
 ## Run the project
@@ -13,7 +13,6 @@ Sprints: 13 - 15
 `npm run dev` — starts the server with hot-reload
 
 ## Technologies used
-
-Server:
-- Node, Express: middlewares, routers 
+- Node, Express: middlewares, routers, controllers, REST api, error handling
 - MongoDB, Mongoose: schemas, models, CRUD operations, refs
+- Security: bcrypt password hashing, Celebrate/Joi + MongoDB validation with regex matching, JWT token, http only cookies, rate limiter
