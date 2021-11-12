@@ -3,11 +3,14 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const {
   errMsgs,
+  errNames,
+  errCodes,
   jwtKey,
   cookieMaxAge,
 } = require('../utils/utils');
 const NotFoundError = require('../errors/NotFoundError');
 const BadDataError = require('../errors/BadDataError');
+const ConflictError = require('../errors/ConflictError');
 
 // GET /users/
 module.exports.getUsers = (req, res, next) => {
@@ -34,7 +37,7 @@ module.exports.getUserInfo = (req, res, next) => {
 };
 
 // POST /signup
-module.exports.createUser = (req, res, next) => {
+module.exports.createUser = async (req, res, next) => {
   const {
     name,
     about,
@@ -43,21 +46,27 @@ module.exports.createUser = (req, res, next) => {
     password,
   } = req.body;
 
-  bcrypt.hash(password, 10)
-    .then((hash) => User.create({
-      name,
-      about,
-      avatar,
-      email,
-      password: hash,
-    }))
-    .then((user) => {
-      if (!user) {
+  const hash = await bcrypt.hash(password, 10);
+  // eslint-disable-next-line
+  const user = User.create({
+    name,
+    about,
+    avatar,
+    email,
+    password: hash,
+  }, (err, usr) => {
+    try {
+      if (err && err.name === errNames.MONGO && err.code === errCodes.ERR_CODE_MDB_DUPLICATE) {
+        throw new ConflictError(errMsgs.ERR_MSG_NOT_CREATED('user'));
+      } else if (!usr) {
         throw new BadDataError(errMsgs.ERR_MSG_NOT_CREATED('user'));
+      } else {
+        res.send({ data: { email } });
       }
-      res.send({ data: { email } });
-    })
-    .catch(next);
+    } catch (error) {
+      next(error);
+    }
+  });
 };
 
 // PATCH /users/me — updates profile

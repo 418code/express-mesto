@@ -16,6 +16,7 @@ module.exports.resMsgs = {
 module.exports.errNames = {
   VALIDATION: 'ValidationError',
   CAST: 'CastError',
+  CONFLICT: 'ConflictError',
   NOT_FOUND: 'DocumentNotFoundError',
   NOT_AUTH: 'AuthenticationError',
   FORBIDDEN: 'ForbiddenError',
@@ -38,6 +39,7 @@ module.exports.errors = {
   [this.errNames.NOT_FOUND]: this.errCodes.ERR_CODE_NOT_FOUND,
   [this.errNames.NOT_AUTH]: this.errCodes.ERR_CODE_NOT_AUTH,
   [this.errNames.FORBIDDEN]: this.errCodes.ERR_CODE_FORBIDDEN,
+  [this.errNames.CONFLICT]: this.errCodes.ERR_CODE_CONFLICT,
 };
 
 module.exports.sendErrRes = (res, errCode, errMsg) => {
