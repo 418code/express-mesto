@@ -1,5 +1,5 @@
 const { celebrate, Joi, Segments } = require('celebrate');
-const { urlRegEx, tokenRegEx } = require('../utils/utils');
+const { urlRegEx } = require('../utils/utils');
 
 module.exports.validateCreateCard = celebrate({
   [Segments.BODY]: Joi.object().keys({
@@ -16,9 +16,9 @@ module.exports.validateCardId = celebrate({
 
 module.exports.validateCreateUser = celebrate({
   [Segments.BODY]: Joi.object().keys({
-    name: Joi.string(),
-    about: Joi.string(),
-    avatar: Joi.string(),
+    name: Joi.string().min(2).max(30),
+    about: Joi.string().min(2).max(30),
+    avatar: Joi.string().regex(urlRegEx),
     email: Joi.string().required().email(),
     password: Joi.string().required(),
   }),
@@ -48,11 +48,4 @@ module.exports.validateLogin = celebrate({
     email: Joi.string().required().email(),
     password: Joi.string().required().min(8),
   }),
-});
-
-module.exports.validateHeaderToken = celebrate({
-  [Segments.HEADERS]: Joi.object().keys({
-    authorization:
-      Joi.string().required().regex(tokenRegEx),
-  }).unknown(),
 });

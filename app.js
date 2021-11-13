@@ -15,7 +15,6 @@ const { auth } = require('./middlewares/auth');
 const {
   validateLogin,
   validateCreateUser,
-  validateHeaderToken,
 } = require('./middlewares/valid');
 
 const { PORT } = process.env;
@@ -40,7 +39,6 @@ app.use(express.urlencoded({ extended: true }));
 app.post('/signin', validateLogin, login);
 app.post('/signup', validateCreateUser, createUser);
 
-app.use(validateHeaderToken); // check if auth token present
 app.use(auth); // enable authentication for next routes
 
 app.use('/users', userRouter);

@@ -1,7 +1,9 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const validator = require('validator');
 const { errMsgs } = require('../utils/utils');
 const NotAuthError = require('../errors/NotAuthError');
+const BadDataError = require('../errors/BadDataError');
 const { urlRegEx } = require('../utils/utils');
 
 const userSchema = new mongoose.Schema({
@@ -24,9 +26,13 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    minlength: 5,
     required: true,
     unique: true,
+    validate(value) {
+      if (!validator.isEmail(value)) {
+        throw new BadDataError(errMsgs.ERR_MSG_BAD_DATA('email'));
+      }
+    },
   },
   password: {
     type: String,
