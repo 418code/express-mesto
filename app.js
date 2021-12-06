@@ -17,6 +17,10 @@ const {
   validateLogin,
   validateCreateUser,
 } = require('./middlewares/valid');
+const {
+  requestLogger,
+  errorLogger,
+} = require('./middlewares/logger');
 
 const { PORT } = process.env;
 
@@ -38,6 +42,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+// log incoming requests excluding body
+app.use(requestLogger);
+
 app.post('/signin', validateLogin, login);
 app.post('/signup', validateCreateUser, createUser);
 
@@ -48,6 +55,10 @@ app.use('/cards', cardRouter);
 app.use('*', (req, res) => {
   sendErrRes(res, errCodes.ERR_CODE_NOT_FOUND, errMsgs.ERR_MSG_NOT_FOUND('page'));
 });
+
+// error processing logic
+// log errors before handling it
+app.use(errorLogger);
 app.use(handleErrors);
 
 app.listen(PORT);
