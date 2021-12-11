@@ -4,7 +4,7 @@
 
 ## Описание
 
-Node/Express/MongoDB сервер для [React front end для обмена фотографиями](https://github.com/bliss-code/react-mesto-auth)\
+Node/Express/MongoDB сервер для [React front end для обмена фотографиями](https://github.com/web3flow/react-mesto-auth)\
 Спринты: 13 - 15
 
 ## Запуск проекта
