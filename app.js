@@ -1,7 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const rateLimit = require('express-rate-limit');
-const cookieParser = require('cookie-parser');
 const userRouter = require('./routes/users');
 const cardRouter = require('./routes/cards');
 const {
@@ -40,7 +39,6 @@ app.use(limiter); // basic ddos prevention
 // body-parser is built-in with latest express
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
 
 // log incoming requests excluding body
 app.use(requestLogger);

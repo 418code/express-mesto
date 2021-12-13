@@ -15,4 +15,4 @@ Sprints: 13 - 15
 ## Technologies used
 - Node, Express: middlewares, routers, controllers, REST api, error handling
 - MongoDB, Mongoose: schemas, models, CRUD operations, refs
-- Security: bcrypt password hashing, Celebrate/Joi + MongoDB validation with regex matching, JWT token, http only cookies, rate limiter
+- Security: bcrypt password hashing, Celebrate/Joi + MongoDB validation with regex matching, JWT token, rate limiter

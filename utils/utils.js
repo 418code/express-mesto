@@ -48,8 +48,6 @@ module.exports.sendErrRes = (res, errCode, errMsg) => {
 
 module.exports.jwtKey = '7Bfp29Lifm!fnpw6ZqP6290nat';
 
-module.exports.cookieMaxAge = 7 * 24 * 60 * 1000;
-
 module.exports.urlRegEx = /https?:\/\/(www\.)?[a-zA-Z0-9._~:/?#[\]@!$&'()*+,;=]+/;
 
 module.exports.limiterValues = {

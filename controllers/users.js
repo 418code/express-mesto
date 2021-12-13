@@ -6,7 +6,6 @@ const {
   errNames,
   errCodes,
   jwtKey,
-  cookieMaxAge,
 } = require('../utils/utils');
 const NotFoundError = require('../errors/NotFoundError');
 const BadDataError = require('../errors/BadDataError');
@@ -102,10 +101,7 @@ module.exports.login = (req, res, next) => {
   User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, jwtKey, { expiresIn: '7d' });
-      res.cookie('jwt', token, {
-        maxAge: cookieMaxAge,
-        httpOnly: true,
-      })
+      res.send({ token })
         .end();
     })
     .catch(next);
