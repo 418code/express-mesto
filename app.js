@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const rateLimit = require('express-rate-limit');
+const cors = require('cors');
 const userRouter = require('./routes/users');
 const cardRouter = require('./routes/cards');
 const {
@@ -8,6 +9,7 @@ const {
   errCodes,
   errMsgs,
   limiterValues,
+  corsOptions,
 } = require('./utils/utils');
 const { handleErrors } = require('./middlewares/error');
 const { createUser, login } = require('./controllers/users');
@@ -35,6 +37,8 @@ const limiter = rateLimit({
 const app = express();
 
 app.use(limiter); // basic ddos prevention
+
+app.use(cors(corsOptions));
 
 // body-parser is built-in with latest express
 app.use(express.json());

@@ -54,3 +54,10 @@ module.exports.limiterValues = {
   windowMs: 10 * 60 * 1000, // 10 min
   max: 100, // limit each IP to 100 requests per windowMs
 };
+
+module.exports.corsOptions = {
+  origin: 'http://localhost:3001',
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
+};
