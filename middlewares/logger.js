@@ -2,6 +2,15 @@ const winston = require('winston');
 require('winston-daily-rotate-file');
 const expressWinston = require('express-winston');
 
+// avoid logging cookies
+function customRequestFilter(req, propName) {
+  if (propName !== 'headers') return req[propName];
+
+  const { cookie, ...rest } = req.headers;
+
+  return rest;
+}
+
 const requestLogger = expressWinston.logger({
   exitOnError: false,
   transports: [
@@ -14,6 +23,7 @@ const requestLogger = expressWinston.logger({
       maxFiles: '64',
     }),
   ],
+  requestFilter: customRequestFilter,
   format: winston.format.combine(
     winston.format.colorize(),
     winston.format.json(),
