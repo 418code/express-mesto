@@ -15,7 +15,7 @@ const ConflictError = require('../errors/ConflictError');
 module.exports.getUsers = (req, res, next) => {
   User.find({})
     .orFail(() => new NotFoundError(errMsgs.ERR_MSG_NOT_FOUND('users')))
-    .then((users) => res.send(users))
+    .then((users) => res.send({ data: users }))
     .catch(next);
 };
 
@@ -25,7 +25,7 @@ module.exports.getUser = (req, res, next) => {
 
   User.findById(userId)
     .orFail(() => new NotFoundError(errMsgs.ERR_MSG_NOT_FOUND('user')))
-    .then((user) => res.send(user))
+    .then((user) => res.send({ data: user }))
     .catch(next);
 };
 
@@ -76,7 +76,7 @@ module.exports.updateUser = (req, res, next) => {
   User.findByIdAndUpdate(_id, { name, about }, { new: true, runValidators: true })
     .orFail(() => NotFoundError(errMsgs.ERR_MSG_NOT_FOUND('user')))
     .then((user) => {
-      res.send(user);
+      res.send({ data: user });
     })
     .catch(next);
 };
@@ -89,7 +89,7 @@ module.exports.updateAvatar = (req, res, next) => {
   User.findByIdAndUpdate(_id, { avatar }, { new: true, runValidators: true })
     .orFail(() => NotFoundError(errMsgs.ERR_MSG_NOT_FOUND('user')))
     .then((user) => {
-      res.send(user);
+      res.send({ data: user });
     })
     .catch(next);
 };
