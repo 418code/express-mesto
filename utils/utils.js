@@ -46,7 +46,7 @@ module.exports.sendErrRes = (res, errCode, errMsg) => {
   res.status(errCode).send({ message: errMsg });
 };
 
-module.exports.jwtKey = '7Bfp29Lifm!fnpw6ZqP6290nat';
+module.exports.jwtDevKey = '7Bfp29Lifm!fnpw6ZqP6290nat';
 
 module.exports.cookieMaxAge = 7 * 24 * 60 * 1000;
 
