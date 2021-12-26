@@ -58,7 +58,7 @@ module.exports.limiterValues = {
 };
 
 module.exports.corsOptions = {
-  origin: 'http://localhost:3001',
+  origin: 'http://mesto.418co.de',
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   preflightContinue: false,
   optionsSuccessStatus: 204,
