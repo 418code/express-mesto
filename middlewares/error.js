@@ -6,8 +6,7 @@ const {
   errors,
 } = require('../utils/utils');
 
-// eslint-disable-next-line
-module.exports.handleErrors = (err, req, res, next) => {
+module.exports.handleErrors = (err, req, res) => {
   const errorNames = Object.keys(errors);
 
   // catch celebrate validation errors

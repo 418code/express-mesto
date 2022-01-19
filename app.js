@@ -6,8 +6,6 @@ const cors = require('cors');
 const userRouter = require('./routes/users');
 const cardRouter = require('./routes/cards');
 const {
-  sendErrRes,
-  errCodes,
   errMsgs,
   limiterValues,
   corsOptions,
@@ -23,6 +21,7 @@ const {
   requestLogger,
   errorLogger,
 } = require('./middlewares/logger');
+const NotFoundError = require('./errors/NotFoundError');
 
 const { PORT } = process.env;
 
@@ -55,8 +54,8 @@ app.use(auth); // enable authentication for next routes
 
 app.use('/users', userRouter);
 app.use('/cards', cardRouter);
-app.use('*', (req, res) => {
-  sendErrRes(res, errCodes.ERR_CODE_NOT_FOUND, errMsgs.ERR_MSG_NOT_FOUND('page'));
+app.use('*', (req, res, next) => {
+  next(new NotFoundError(errMsgs.ERR_MSG_NOT_FOUND('page')));
 });
 
 // error processing logic
