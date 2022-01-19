@@ -36,8 +36,6 @@ const limiter = rateLimit({
 
 const app = express();
 
-app.use(limiter); // basic ddos prevention
-
 app.use(cors(corsOptions));
 
 // body-parser is built-in with latest express
@@ -46,6 +44,8 @@ app.use(express.urlencoded({ extended: true }));
 
 // log incoming requests excluding body
 app.use(requestLogger);
+
+app.use(limiter); // basic ddos prevention
 
 app.post('/signin', validateLogin, login);
 app.post('/signup', validateCreateUser, createUser);
