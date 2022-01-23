@@ -4,7 +4,7 @@
 
 ## Description
 
-Node/Express/MongoDB back end for [React photo sharing front end](https://github.com/web3flow/react-mesto-auth)\
+Node/Express/MongoDB back end for [React photo sharing front end](https://github.com/418code/react-mesto-auth)\
 Sprints: 13 - 15
 
 ## Run the project
