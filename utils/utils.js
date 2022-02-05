@@ -9,10 +9,6 @@ module.exports.errMsgs = {
   ERR_MSG_NOT_UPDATED: (name) => `Requested ${name} not updated`,
 };
 
-module.exports.resMsgs = {
-  RES_MSG_CARD_DELETED: 'Post successfully deleted',
-};
-
 module.exports.errNames = {
   VALIDATION: 'ValidationError',
   CAST: 'CastError',

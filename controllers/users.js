@@ -76,7 +76,7 @@ module.exports.updateUser = (req, res, next) => {
   const { _id } = req.user;
 
   User.findByIdAndUpdate(_id, { name, about }, { new: true, runValidators: true })
-    .orFail(() => NotFoundError(errMsgs.ERR_MSG_NOT_FOUND('user')))
+    .orFail(() => new NotFoundError(errMsgs.ERR_MSG_NOT_FOUND('user')))
     .then((user) => {
       res.send({ data: user });
     })
@@ -89,7 +89,7 @@ module.exports.updateAvatar = (req, res, next) => {
   const { _id } = req.user;
 
   User.findByIdAndUpdate(_id, { avatar }, { new: true, runValidators: true })
-    .orFail(() => NotFoundError(errMsgs.ERR_MSG_NOT_FOUND('user')))
+    .orFail(() => new NotFoundError(errMsgs.ERR_MSG_NOT_FOUND('user')))
     .then((user) => {
       res.send({ data: user });
     })

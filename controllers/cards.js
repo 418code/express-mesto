@@ -4,7 +4,6 @@ const NotFoundError = require('../errors/NotFoundError');
 const ForbiddenError = require('../errors/ForbiddenError');
 const {
   errMsgs,
-  resMsgs,
 } = require('../utils/utils');
 
 // GET /cards — returns all cards
@@ -26,7 +25,7 @@ module.exports.createCard = (req, res, next) => {
       if (!card) {
         throw new BadDataError(errMsgs.ERR_MSG_NOT_CREATED('card'));
       } else {
-        Card.findById(card._id)
+        return Card.findById(card._id)
           .orFail(() => new NotFoundError(errMsgs.ERR_MSG_NOT_FOUND('card')))
           .populate(['owner', 'likes'])
           .then((populatedCard) => {
@@ -47,10 +46,11 @@ module.exports.deleteCard = (req, res, next) => {
     .then((card) => {
       if (card.owner._id.toString() !== _id) {
         throw new ForbiddenError();
+      } else {
+        return Card.deleteOne(card)
+          .orFail(() => new NotFoundError(errMsgs.ERR_MSG_NOT_FOUND('card')))
+          .then(() => { res.send(); });
       }
-      Card.findByIdAndRemove(cardId)
-        .orFail(() => new NotFoundError(errMsgs.ERR_MSG_NOT_FOUND('card')))
-        .then(() => { res.send({ message: resMsgs.RES_MSG_CARD_DELETED }); });
     })
     .catch(next);
 };
