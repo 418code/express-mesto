@@ -4,6 +4,7 @@ const NotFoundError = require('../errors/NotFoundError');
 const ForbiddenError = require('../errors/ForbiddenError');
 const {
   errMsgs,
+  resMsgs,
 } = require('../utils/utils');
 
 // GET /cards — returns all cards
@@ -49,7 +50,7 @@ module.exports.deleteCard = (req, res, next) => {
       } else {
         return Card.deleteOne(card)
           .orFail(() => new NotFoundError(errMsgs.ERR_MSG_NOT_FOUND('card')))
-          .then(() => { res.send(); });
+          .then(() => { res.send({ data: { message: resMsgs.RES_MSG_CARD_DELETED } }); });
       }
     })
     .catch(next);

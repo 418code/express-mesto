@@ -44,6 +44,10 @@ module.exports.sendErrRes = (res, errCode, errMsg) => {
   res.status(errCode).send({ message: errMsg });
 };
 
+module.exports.resMsgs = {
+  RES_MSG_CARD_DELETED: 'Post successfully deleted',
+};
+
 module.exports.jwtDevKey = '7Bfp29Lifm!fnpw6ZqP6290nat';
 
 module.exports.urlRegEx = /https?:\/\/(www\.)?[a-zA-Z0-9._~:/?#[\]@!$&'()*+,;=]+/;
