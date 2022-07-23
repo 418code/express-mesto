@@ -1,3 +1,5 @@
+const { NODE_ENV } = process.env;
+
 module.exports.errMsgs = {
   ERR_MSG_DEFAULT: 'A server error happened',
   ERR_MSG_LOGIN: 'Wrong email or password',
@@ -52,7 +54,9 @@ module.exports.limiterValues = {
 };
 
 module.exports.corsOptions = {
-  origin: 'https://mesto.418co.de',
+  origin: (NODE_ENV === 'production'
+    ? 'https://mesto.418co.de'
+    : 'http://localhost:3001'),
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   preflightContinue: false,
   optionsSuccessStatus: 204,
