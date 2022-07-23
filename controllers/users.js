@@ -62,7 +62,17 @@ module.exports.createUser = async (req, res, next) => {
       } else if (!usr) {
         throw new BadDataError(errMsgs.ERR_MSG_NOT_CREATED('user'));
       } else {
-        res.send({ data: { email } });
+        res.send({
+          data:
+          {
+            user: {
+              name,
+              about,
+              avatar,
+              email,
+            },
+          },
+        });
       }
     } catch (error) {
       next(error);
@@ -72,10 +82,20 @@ module.exports.createUser = async (req, res, next) => {
 
 // PATCH /users/me — updates profile
 module.exports.updateUser = (req, res, next) => {
-  const { name, about } = req.body;
+  const {
+    name,
+    about,
+    email,
+    locale,
+  } = req.body;
   const { _id } = req.user;
 
-  User.findByIdAndUpdate(_id, { name, about }, { new: true, runValidators: true })
+  User.findByIdAndUpdate(_id, {
+    name,
+    about,
+    email,
+    locale,
+  }, { new: true, runValidators: true })
     .orFail(() => new NotFoundError(errMsgs.ERR_MSG_NOT_FOUND('user')))
     .then((user) => {
       res.send({ data: user });
@@ -103,7 +123,7 @@ module.exports.login = (req, res, next) => {
   User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : jwtDevKey, { expiresIn: '7d' });
-      res.send({ token })
+      res.send({ token, user })
         .end();
     })
     .catch(next);

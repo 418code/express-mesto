@@ -34,6 +34,13 @@ const userSchema = new mongoose.Schema({
       }
     },
   },
+  locale: {
+    type: String,
+    required: true,
+    default: 'en-us',
+    minlength: 5,
+    maxlength: 10,
+  },
   password: {
     type: String,
     required: true,
